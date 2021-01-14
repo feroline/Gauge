@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Gauge</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+    <style>
+        .text-gauge{
+            font-family:  'Roboto',sans-serif;
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        .gauge{
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div class="gauge">
+    <div id="text-gauge-radial" class="text-gauge">0%</div>
+    <canvas id="foo"></canvas>
+</div>
+
+</body>
+<script type="text/javascript" src="https://bernii.github.io/gauge.js/dist/gauge.min.js"></script>
+<script type="text/javascript">
+
+    createGaugeRadial(50,document.getElementById('foo'),'text-gauge-radial');
+
+    function createGaugeRadial(valorGauge,idCanvas,idTextField) {
+
+        var canvasTargetCtx = idCanvas.getContext('2d');
+
+        var grad = canvasTargetCtx.createRadialGradient(-1, 0, 0, 0, 0, 190); //cria um gradiente com o intuito de sombreamento
+        grad.addColorStop(0.5, 'rgba(255,255,255,0)');
+        grad.addColorStop(0.4, 'rgba(0,0,0,0.2)');
+        canvasTargetCtx.strokeStyle = grad;
+
+        var opts = {
+            angle: 0, // The span of the gauge arc
+            lineWidth: 0.3, // The line thickness
+            radiusScale: 0.9, // Relative radius
+            pointer: {
+                length: 0.54, // // Relative to gauge radius
+                strokeWidth: 0.053, // The thickness
+                color: '#000000' // Fill color
+            },
+            limitMax: false,     // If false, max value increases automatically if value > maxValue
+            limitMin: false,     // If true, the min value of the gauge will be fixed
+            colorStart: '#6FADCF',   // Colors
+            colorStop: '#8FC0DA',    // just experiment with them
+            strokeColor: '#E0E0E0',  // to see which ones work best for you
+            generateGradient: true,
+            highDpiSupport: true,     // High resolution support
+            staticZones: [
+                {strokeStyle: "#ff0000", min: 0, max: 39.5},
+                {strokeStyle: grad, min: 0, max: 39.5},
+                {strokeStyle: "#fb9f00", min: 41.5, max: 70,},
+                {strokeStyle: grad, min: 41.5, max: 70},
+                {strokeStyle: "#ebe939", min: 71.5, max: 110},
+                {strokeStyle: grad, min: 71.5, max: 110},
+                {strokeStyle: "#29af19", min: 111.5, max: 190},
+                {strokeStyle: grad, min: 111.5, max: 190},
+                {strokeStyle: "#ebe939", min: 191.5, max: 230},
+                {strokeStyle: grad, min: 191.5, max: 230},
+                {strokeStyle: "#fb9f00", min: 231.5, max: 260},
+                {strokeStyle: grad, min: 231.5, max: 260},
+                {strokeStyle: "#ff0000", min: 262.5, max: 300},
+                {strokeStyle: grad, min: 262.5, max: 300}
+            ],
+            staticLabels: {
+                font: "10px sans-serif",
+                labels: [0, 50, 100, 150, 200, 250, 300],
+                color: "#000000",
+                fractionDigits: 0
+            },
+            renderTicks: {
+                divisions: 4,
+                divWidth: 0.8,
+                divLength: 0.5,
+                divColor: '#333333',
+                subDivisions: 3,
+                subLength: 0.3,
+                subWidth: 0.5,
+                subColor: '#666666'
+            }
+        };
+
+        var gauge = new Gauge(idCanvas).setOptions(opts); //desenha um gauge no canvas
+        gauge.maxValue = 300; // valor máximo
+        gauge.setMinValue(0);  // valor mínimo
+        gauge.animationSpeed = 50; // velocidade da animação do ponteiro
+
+        /*condicional com ajax aqui para atualizar o valor, sendo necessário retirar o parâmetro valorGauge,
+        ou mudar apenas quando atualizar a página, neste último caso não é necessário mudança*/
+        // if (valorRecebido != valorAtual) {   exemplo
+        // gauge.set(valorRecebidoPeloajax);    exemplo
+        gauge.set(valorGauge); // Inserir o valor
+        //fim if                                exemplo
+
+        gauge.setTextField(document.getElementById(idTextField)); //insere o mesmo valor presente em gauge.set() no campo com o id passado
+    }
+
+</script>
+</html>
