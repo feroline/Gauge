@@ -21,13 +21,137 @@
 <div class="gauge">
     <div id="text-gauge-radial" class="text-gauge">0%</div>
     <canvas id="foo"></canvas>
+
+    <div id="gauge-temp" class="tempGauge-demo">-10&deg;C</div>
+<!--    <canvas></canvas>-->
+
+
+    <!--    <div id="text-gauge-temperatura" class="text-gauge">0%</div>-->
+<!--    <canvas id="gauge-temperatura"></canvas>-->
+
+    <div id="chart-container"></div>
 </div>
 
 </body>
+
 <script type="text/javascript" src="https://bernii.github.io/gauge.js/dist/gauge.min.js"></script>
+<script type="text/javascript" src="https://cdn.fusioncharts.com/fusioncharts/latest/fusioncharts.js"></script>
+<script type="text/javascript" src="https://cdn.fusioncharts.com/fusioncharts/latest/themes/fusioncharts.theme.fusion.js"></script>
 <script type="text/javascript">
 
-    createGaugeRadial(50,document.getElementById('foo'),'text-gauge-radial');
+    var dados =
+        {
+            'nomeIndicadorTemperatura' : 'temperaturaAmbiente',
+            'temperaturas' : {
+                'temperaturaAtual' : '25',
+                'limiteMaximo' : '100',
+                'limiteMinimo' : '-10',
+                'tempertauraWarningTop' : '40',
+                'temperaturaWarningBottom' : '20',
+            },
+            'cores' : {
+                'success' : '#6CF928',
+                'warning' : '#F9F228',
+                'danger' : '#F92828',
+            }
+
+        };
+
+createGaugeRadial(50,document.getElementById('foo'),'text-gauge-radial');
+createGaugeTemperatura(dados);
+
+function createGaugeTemperatura(dados){
+
+    condicionalGaugeTemperatura(dados.temperaturas.temperaturaAtual,dados.temperaturas.tempertauraWarningTop,dados.temperaturas.temperaturaWarningBottom);
+
+    function condicionalGaugeTemperatura(tempAtual,tempWarningTop,tempWarningBottom){
+        tempAtual = parseInt(tempAtual);
+        tempWarningTop = parseInt(tempWarningTop);
+        tempWarningBottom = parseInt(tempWarningBottom);
+
+        if( tempAtual < tempWarningTop && tempAtual > tempWarningTop){ // condicional para success
+            corFill = dados.cores.success;
+        }else if (tempAtual > tempWarningTop || tempAtual < tempWarningBottom){ //condicional para danger
+            corFill = dados.cores.danger;
+        }else{ //condicional para warning
+            corFill = dados.cores.warning
+        }
+
+    }
+
+    FusionCharts.ready(function(){
+        var chartObj = new FusionCharts({
+                type: 'thermometer',
+                renderAt: 'chart-container',
+                width: '240',
+                height: '310',
+                dataFormat: 'json',
+                dataSource: {
+                    "chart": {
+                        "caption": "Temperatura",
+                        // "subcaption": " Central cold store",
+                        "lowerLimit": dados.temperaturas.limiteMinimo, //inserir aqui o limite mínimo
+                        "upperLimit": dados.temperaturas.limiteMinimo, //inserir aqui o limite máximo
+
+                        "decimals": "1",
+                        "numberSuffix": "°C",
+                        "showhovereffect": "0",
+
+                        "showGaugeBorder": "0",
+                        "gaugeBorderColor": "#008ee4",
+                        "gaugeBorderThickness": "2",
+                        "gaugeBorderAlpha": "30",
+                        "thmOriginX": "100", //centralização
+                        "chartBottomMargin": "20",
+                        "valueFontColor": "#000000",
+                        "theme": "fusion",
+                        "showvalue" : "1",
+                        "majorTMNumber" : "6",
+                        "minorTMNumber" : "1",
+                        "gaugeFillColor": corFill,
+                        "gaugeFillAlpha": "80"
+
+                    },
+                    "value": dados.temperaturas.temperaturaAtual, //valor tem que estar dentro do LowerLimit e MaxLimit
+                },
+                "events": {
+                    "rendered": function(evt, arg) {
+                        /*PARA ATUALIZAR OS DADOS EM TEMPO REAL
+                        * neste caso está em random, mas aqui ficaria o ajax
+                        * */
+                        evt.sender.dataUpdate = setInterval(function() {
+                                var value,
+                                    prevTemp = evt.sender.getData(),
+                                    mainTemp = (Math.random() * 10) * (-1),
+                                    diff = Math.abs(prevTemp - mainTemp);
+
+                                diff = diff > 1 ? (Math.random() * 1) : diff;
+                                if (mainTemp > prevTemp) {
+                                    value = prevTemp + diff;
+                                } else {
+                                    value = prevTemp - diff;
+                                }
+                                condicionalGaugeTemperatura(value,dados.temperaturas.tempertauraWarningTop,dados.temperaturas.temperaturaWarningBottom);
+                                evt.sender.feedData("&value=" + value) //retorno do ajax seria implementado aqui
+
+                        }, 3000);
+                    },
+                    // caregamento em tempo real
+                    // Real time update using JavaScript API (using setData, feedData, and setDataForId functions)
+                    // https://www.fusioncharts.com/dev/chart-guide/gauges-and-widgets/thermometer-gauge#use-the-realtimeupdatecomplete-event
+                    "realtimeUpdateError": function(evtObj, argObj) {
+                        document.getElementById('chart-message').innerHTML = "<b>Erro Ocorrido!</b><br> Status Code : " + argObj.httpStatus;
+                    },
+                    'disposed': function(evt, arg) {
+                        clearInterval(evt.sender.dataUpdate);
+                    }
+                }
+            }
+        );
+        chartObj.render();
+    });
+}
+
 
     function createGaugeRadial(valorGauge,idCanvas,idTextField) {
 
