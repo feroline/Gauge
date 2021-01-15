@@ -21,8 +21,8 @@
 <div class="gauge">
     <div id="text-gauge-radial" class="text-gauge">0%</div>
     <canvas id="foo"></canvas>
-
-    <div id="gauge-temp" class="tempGauge-demo">-10&deg;C</div>
+<br>
+    <div id="gauge-temp" class="tempGauge-demo"></div>
 <!--    <canvas></canvas>-->
 
 
@@ -39,26 +39,43 @@
 <script type="text/javascript" src="https://cdn.fusioncharts.com/fusioncharts/latest/themes/fusioncharts.theme.fusion.js"></script>
 <script type="text/javascript">
 
-    var dados =
-        {
-            'nomeIndicadorTemperatura' : 'temperaturaAmbiente',
-            'temperaturas' : {
-                'temperaturaAtual' : '25',
-                'limiteMaximo' : '100',
-                'limiteMinimo' : '-10',
-                'tempertauraWarningTop' : '40',
-                'temperaturaWarningBottom' : '20',
-            },
-            'cores' : {
-                'success' : '#6CF928',
-                'warning' : '#F9F228',
-                'danger' : '#F92828',
-            }
+    var dadosTemperaturaGauge = {
+        'nomeIndicadorTemperatura' : 'temperaturaAmbiente',
+        'temperaturas' : {
+            'temperaturaAtual' : '25',
+            'limiteMaximo' : '100',
+            'limiteMinimo' : '-10',
+            'tempertauraWarningTop' : '40',
+            'temperaturaWarningBottom' : '20',
+        },
+        'cores' : {
+            'success' : '#6CF928',
+            'warning' : '#F9F228',
+            'danger' : '#F92828',
+        }
+    };
 
-        };
+    /*
+    * É necessário esses parâmetros, pois o danger de um equipamento pode váriar para o outro
+    *   */
 
-createGaugeRadial(50,document.getElementById('foo'),'text-gauge-radial');
-createGaugeTemperatura(dados);
+    var dadosRadialMax = {
+        'tamanhoMaximoDanger' : 50,
+        'tamanhoMaximoWarning' : 90,
+        'tamanhoMaximoSucess' : 200,
+    };
+
+    var dadosRadialGauge = {
+
+        // 'tamanhoMax' : 300,
+        'tamanhoMax' : dadosRadialMax.tamanhoMaximoSucess+(dadosRadialMax.tamanhoMaximoDanger*2),
+        'tamanhoMinimo' : 0,
+        dadosRadialMax,
+        'valorGauge':50,
+    }
+
+createGaugeRadial(document.getElementById('foo'),'text-gauge-radial',dadosRadialGauge);
+createGaugeTemperatura(dadosTemperaturaGauge);
 
 function createGaugeTemperatura(dados){
 
@@ -151,9 +168,7 @@ function createGaugeTemperatura(dados){
         chartObj.render();
     });
 }
-
-
-    function createGaugeRadial(valorGauge,idCanvas,idTextField) {
+function createGaugeRadial(idCanvas,idTextField,dados) {
 
         var canvasTargetCtx = idCanvas.getContext('2d');
 
@@ -162,6 +177,7 @@ function createGaugeTemperatura(dados){
         grad.addColorStop(0.4, 'rgba(0,0,0,0.2)');
         canvasTargetCtx.strokeStyle = grad;
 
+        // var tamAlter = dados.tamanhoMax/6;
         var opts = {
             angle: 0, // The span of the gauge arc
             lineWidth: 0.3, // The line thickness
@@ -179,24 +195,20 @@ function createGaugeTemperatura(dados){
             generateGradient: true,
             highDpiSupport: true,     // High resolution support
             staticZones: [
-                {strokeStyle: "#ff0000", min: 0, max: 39.5},
-                {strokeStyle: grad, min: 0, max: 39.5},
-                {strokeStyle: "#fb9f00", min: 41.5, max: 70,},
-                {strokeStyle: grad, min: 41.5, max: 70},
-                {strokeStyle: "#ebe939", min: 71.5, max: 110},
-                {strokeStyle: grad, min: 71.5, max: 110},
-                {strokeStyle: "#29af19", min: 111.5, max: 190},
-                {strokeStyle: grad, min: 111.5, max: 190},
-                {strokeStyle: "#ebe939", min: 191.5, max: 230},
-                {strokeStyle: grad, min: 191.5, max: 230},
-                {strokeStyle: "#fb9f00", min: 231.5, max: 260},
-                {strokeStyle: grad, min: 231.5, max: 260},
-                {strokeStyle: "#ff0000", min: 262.5, max: 300},
-                {strokeStyle: grad, min: 262.5, max: 300}
+                {strokeStyle: "#ff0000", min: dados.tamanhoMinimo, max: dados.dadosRadialMax.tamanhoMaximoDanger}, //50
+                {strokeStyle: grad, min: dados.tamanhoMinimo, max: dados.dadosRadialMax.tamanhoMaximoDanger},
+                {strokeStyle: "#ebe939", min: dados.dadosRadialMax.tamanhoMaximoDanger, max: dados.dadosRadialMax.tamanhoMaximoWarning+dados.dadosRadialMax.tamanhoMaximoDanger}, //90
+                {strokeStyle: grad, min: dados.dadosRadialMax.tamanhoMaximoDanger, max: dados.dadosRadialMax.tamanhoMaximoWarning},
+                {strokeStyle: "#29af19", min: dados.dadosRadialMax.tamanhoMaximoWarning, max: dados.dadosRadialMax.tamanhoMaximoSucess}, //190
+                {strokeStyle: grad, min: dados.dadosRadialMax.tamanhoMaximoWarning, max: dados.dadosRadialMax.tamanhoMaximoSucess},
+                {strokeStyle: "#ebe939", min: dados.dadosRadialMax.tamanhoMaximoSucess, max: dados.dadosRadialMax.tamanhoMaximoSucess+dados.dadosRadialMax.tamanhoMaximoDanger} ,  // 200+50 = 250
+                {strokeStyle: grad, min: dados.dadosRadialMax.tamanhoMaximoSucess, max:  dados.dadosRadialMax.tamanhoMaximoSucess+dados.dadosRadialMax.tamanhoMaximoDanger},
+                {strokeStyle: "#ff0000", min:dadosRadialMax.tamanhoMaximoSucess+dados.dadosRadialMax.tamanhoMaximoDanger, max: dados.tamanhoMax}, //200+50+50 = 300
+                {strokeStyle: grad, min: dados.dadosRadialMax.tamanhoMaximoSucess+dados.dadosRadialMax.tamanhoMaximoDanger,  max: dados.tamanhoMax}
             ],
             staticLabels: {
                 font: "10px sans-serif",
-                labels: [0, 50, 100, 150, 200, 250, 300],
+                labels: [dados.tamanhoMinimo, (25*dados.tamanhoMax)/100,(50*dados.tamanhoMax)/100, (75*dados.tamanhoMax)/100, dados.tamanhoMax],
                 color: "#000000",
                 fractionDigits: 0
             },
@@ -213,15 +225,15 @@ function createGaugeTemperatura(dados){
         };
 
         var gauge = new Gauge(idCanvas).setOptions(opts); //desenha um gauge no canvas
-        gauge.maxValue = 300; // valor máximo
-        gauge.setMinValue(0);  // valor mínimo
+        gauge.maxValue = dados.tamanhoMax; // valor máximo
+        gauge.setMinValue(dados.tamanhoMinimo);  // valor mínimo
         gauge.animationSpeed = 50; // velocidade da animação do ponteiro
 
         /*condicional com ajax aqui para atualizar o valor, sendo necessário retirar o parâmetro valorGauge,
         ou mudar apenas quando atualizar a página, neste último caso não é necessário mudança*/
         // if (valorRecebido != valorAtual) {   exemplo
         // gauge.set(valorRecebidoPeloajax);    exemplo
-        gauge.set(valorGauge); // Inserir o valor
+        gauge.set(dados.valorGauge); // Inserir o valor
         //fim if                                exemplo
 
         gauge.setTextField(document.getElementById(idTextField)); //insere o mesmo valor presente em gauge.set() no campo com o id passado
