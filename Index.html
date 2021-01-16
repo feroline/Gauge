@@ -134,7 +134,11 @@ function createGaugeTemperatura(dados){
                 "events": {
                     "rendered": function(evt, arg) {
                         /*PARA ATUALIZAR OS DADOS EM TEMPO REAL
-                        * neste caso está em random, mas aqui ficaria o ajax
+                        * neste caso está em random, mas aqui ficaria o ajax.
+                        * Não é possível fazer com que as cores se alterem de acordo como o valor modificado,
+                        * a menos que a página seja recarregada, então caso queira uma cor ao lado mais dinâmica,
+                        * não sendo no gauge mais dinâmica, anottations e o updateAnottation
+                        * // https://www.fusioncharts.com/dev/chart-guide/gauges-and-widgets/thermometer-gauge#use-the-realtimeupdatecomplete-event
                         * */
                         evt.sender.dataUpdate = setInterval(function() {
                                 var value,
@@ -153,9 +157,6 @@ function createGaugeTemperatura(dados){
 
                         }, 3000);
                     },
-                    // caregamento em tempo real
-                    // Real time update using JavaScript API (using setData, feedData, and setDataForId functions)
-                    // https://www.fusioncharts.com/dev/chart-guide/gauges-and-widgets/thermometer-gauge#use-the-realtimeupdatecomplete-event
                     "realtimeUpdateError": function(evtObj, argObj) {
                         document.getElementById('chart-message').innerHTML = "<b>Erro Ocorrido!</b><br> Status Code : " + argObj.httpStatus;
                     },
