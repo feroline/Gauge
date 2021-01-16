@@ -42,7 +42,7 @@
     var dadosTemperaturaGauge = {
         'nomeIndicadorTemperatura' : 'temperaturaAmbiente',
         'temperaturas' : {
-            'temperaturaAtual' : '25',
+            'temperaturaAtual' : '35',
             'limiteMaximo' : '100',
             'limiteMinimo' : '-10',
             'tempertauraWarningTop' : '40',
@@ -86,7 +86,7 @@ function createGaugeTemperatura(dados){
         tempWarningTop = parseInt(tempWarningTop);
         tempWarningBottom = parseInt(tempWarningBottom);
 
-        if( tempAtual < tempWarningTop && tempAtual > tempWarningTop){ // condicional para success
+        if( tempAtual < tempWarningTop && tempAtual > tempWarningBottom){ // condicional para success
             corFill = dados.cores.success;
         }else if (tempAtual > tempWarningTop || tempAtual < tempWarningBottom){ //condicional para danger
             corFill = dados.cores.danger;
@@ -140,7 +140,7 @@ function createGaugeTemperatura(dados){
                         * não sendo no gauge mais dinâmica, anottations e o updateAnottation
                         * // https://www.fusioncharts.com/dev/chart-guide/gauges-and-widgets/thermometer-gauge#use-the-realtimeupdatecomplete-event
                         * */
-                        evt.sender.dataUpdate = setInterval(function() {
+                        /*evt.sender.dataUpdate = setInterval(function() {
                                 var value,
                                     prevTemp = evt.sender.getData(),
                                     mainTemp = (Math.random() * 10) * (-1),
@@ -155,7 +155,7 @@ function createGaugeTemperatura(dados){
                                 condicionalGaugeTemperatura(value,dados.temperaturas.tempertauraWarningTop,dados.temperaturas.temperaturaWarningBottom);
                                 evt.sender.feedData("&value=" + value) //retorno do ajax seria implementado aqui
 
-                        }, 3000);
+                        }, 3000);*/
                     },
                     "realtimeUpdateError": function(evtObj, argObj) {
                         document.getElementById('chart-message').innerHTML = "<b>Erro Ocorrido!</b><br> Status Code : " + argObj.httpStatus;
