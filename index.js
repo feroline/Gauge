@@ -51,7 +51,6 @@ function condicionalGaugeTemperatura(tempAtual, dados) {
     tempWarningBottom = dados.temperaturaWarningBottom;
     tempDangerBottom = dados.temperaturaDangerBottom;
 
-    // console.log(tempAtual,tempWarningTop,tempWarningBottom)
     if (tempAtual >= tempDangerBottom && tempAtual < tempWarningBottom
         || tempAtual >= tempDangerTop) { // condicional para success
         return DANGER;
@@ -72,7 +71,6 @@ function createGaugeTemperatura(dados) {
         var valor;
         var limite = dados.limiteMaximo;
 
-        console.log(valor, dados.limiteMaximo)
         if (dados.limiteMinimo < 0) {
             valor = (dados.limiteMaximo + (-1 * dados.limiteMinimo)) / 10;
         }
@@ -160,7 +158,6 @@ function createGaugeTemperatura(dados) {
                     tempReading = `${FToC(temp)}°C, ${temp}°F`;
                 }
                 tempVal.title = tempReading;
-                console.log(tempVal)
             }
 
         }
