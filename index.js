@@ -26,7 +26,7 @@ var dadosTemperaturaGauge = {
     // 'nomeIndicadorTemperatura' : 'temperaturaAmbiente',
     // 'temperaturas' : {
     'useCelcius': true,
-    'temperaturaAtual': 45,
+    'temperaturaAtual': 60,
     'limiteMaximo': 100,
     'limiteMinimo': -10,
     'temperaturaDangerTop': 80, //inicio 80-100
@@ -77,8 +77,13 @@ function createGaugeTemperatura(dados) {
         for (let x = 0; x <= 10; x++) {
             var cor = condicionalGaugeTemperatura(limite, dados);
             $(".colors").append('<div style="background-color: ' + cor + ';width: 10px;height: 50px"></div>');
-            $(".thermometer__f").append(' <div class="thermometer__label">' + Math.round((limite * (9 / 5)) + 32) + '</div>');
-            $(".thermometer__c").append(' <div class="thermometer__label">' + limite + '</div>');
+            if (dados.useCelcius){
+                $(".thermometer__f").append(' <div class="thermometer__label">' + Math.round(CToF(limite)) + '</div>');
+                $(".thermometer__c").append(' <div class="thermometer__label">' + limite + '</div>');
+            }else{
+                $(".thermometer__f").append(' <div class="thermometer__label">' + limite + '</div>');
+                $(".thermometer__c").append(' <div class="thermometer__label">' + Math.round(FToC(limite)) + '</div>');
+            }
             limite -= valor;
 
         }
@@ -142,7 +147,7 @@ function createGaugeTemperatura(dados) {
                 let minTempC = dados.limiteMinimo,
                     maxTempC = dados.limiteMaximo;
 
-                scaleY += (temp - minTempC) / (Math.abs(minTempC) + maxTempC - 2);
+                scaleY += (temp - minTempC) / (Math.abs(minTempC) + maxTempC);
 
                 if (scaleY > scaleYMax)
                     scaleY = scaleYMax;
@@ -168,9 +173,9 @@ function createGaugeTemperatura(dados) {
      */
     if (dados.useCelcius) {
         $(".celsius").append('<span>' + dados.temperaturaAtual + '°C</span>');
-        $(".fahrenheit").append('<span>' + CToF(dados.temperaturaAtual) + '°F</span>');
+        $(".fahrenheit").append('<span>' + Math.round(CToF(dados.temperaturaAtual)) + '°F</span>');
     } else {
-        $(".celsius").append('<span>' + FToC(dados.temperaturaAtual) + '°C</span>');
+        $(".celsius").append('<span>' + Math.round(FToC(dados.temperaturaAtual)) + '°C</span>');
         $(".fahrenheit").append('<span>' + dados.temperaturaAtual + '°F</span>');
     }
 }
