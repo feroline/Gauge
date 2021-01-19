@@ -23,8 +23,6 @@ var dadosRadialGauge = {
 }
 
 var dadosTemperaturaGauge = {
-    // 'nomeIndicadorTemperatura' : 'temperaturaAmbiente',
-    // 'temperaturas' : {
     'useCelcius': true,
     'temperaturaAtual': 60,
     'limiteMaximo': 100,
@@ -34,7 +32,6 @@ var dadosTemperaturaGauge = {
     'temperaturaSuccess': 30,
     'temperaturaWarningBottom': 20, //inicio 20-30
     'temperaturaDangerBottom': -10, //inicio -10-10
-    // }
 };
 
 //FUNÇÕES E SEUS PARAMETROS
