@@ -24,15 +24,32 @@
     <br>
 
     <!--    TERMOMETRO-->
-    <div class="thermometer">
+    <div class="thermometer" id="termometro1">
         <div class="thermometer__inner">
             <div class="thermometer__title celsius"></div>
             <div class="thermometer__title fahrenheit"></div>
             <br>
             <div class="thermometer__c"></div>
             <div class="colors"></div>
-            <div id="temp-val" class="thermometer__tube" title="0°C, 32°F">
-                <div id="temp-fill" class="thermometer__mercury"></div>
+            <div class="thermometer__tube temp-val" title="0°C, 32°F">
+                <div class="thermometer__mercury temp-fill"></div>
+                <div class="thermometer__ring"></div>
+                <div class="thermometer__ring"></div>
+            </div>
+            <div class="colors"></div>
+            <div class="thermometer__f"></div>
+            <div class="thermometer__bulb"></div>
+        </div>
+    </div>
+    <div class="thermometer" id="termometro2">
+        <div class="thermometer__inner">
+            <div class="thermometer__title celsius"></div>
+            <div class="thermometer__title fahrenheit"></div>
+            <br>
+            <div class="thermometer__c"></div>
+            <div class="colors"></div>
+            <div class="thermometer__tube temp-val" title="0°C, 32°F">
+                <div class="thermometer__mercury temp-fill"></div>
                 <div class="thermometer__ring"></div>
                 <div class="thermometer__ring"></div>
             </div>
@@ -46,6 +63,7 @@
 </body>
 
 <script type="text/javascript" src="https://bernii.github.io/gauge.js/dist/gauge.min.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>-->
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script type="text/javascript" src="index.js"></script>
 </html>

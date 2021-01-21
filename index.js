@@ -23,6 +23,7 @@ var dadosRadialGauge = {
 }
 
 var dadosTemperaturaGauge = {
+    'idTermometro' : 'termometro1',
     'useCelcius': true,
     'temperaturaAtual': 60,
     'limiteMaximo': 100,
@@ -34,9 +35,23 @@ var dadosTemperaturaGauge = {
     'temperaturaDangerBottom': -10, //inicio -10-10
 };
 
+var dadosTemperaturaGauge2 = {
+    'idTermometro' : 'termometro2',
+    'useCelcius': false,
+    'temperaturaAtual': 126,
+    'limiteMaximo': 355,
+    'limiteMinimo': -2,
+    'temperaturaDangerTop': 300, //inicio 80-100
+    'tempertauraWarningTop': 200, //incio 70-80
+    'temperaturaSuccess': 100,
+    'temperaturaWarningBottom': 50, //inicio 20-30
+    'temperaturaDangerBottom': -2, //inicio -10-10
+};
+
 //FUNÇÕES E SEUS PARAMETROS
 createGaugeRadial(document.getElementById('foo'), 'text-gauge-radial', dadosRadialGauge);
 createGaugeTemperatura(dadosTemperaturaGauge);
+createGaugeTemperatura(dadosTemperaturaGauge2);
 
 //CONDICIONAL PARA CORES NO GAUGE DE TEMPERATURA
 function condicionalGaugeTemperatura(tempAtual, dados) {
@@ -73,13 +88,13 @@ function createGaugeTemperatura(dados) {
         }
         for (let x = 0; x <= 10; x++) {
             var cor = condicionalGaugeTemperatura(limite, dados);
-            $(".colors").append('<div style="background-color: ' + cor + ';width: 10px;height: 50px"></div>');
+            $("#"+dados.idTermometro+" .colors").append('<div style="background-color: ' + cor + ';width: 10px;height: 50px"></div>');
             if (dados.useCelcius){
-                $(".thermometer__f").append(' <div class="thermometer__label">' + Math.round(CToF(limite)) + '</div>');
-                $(".thermometer__c").append(' <div class="thermometer__label">' + limite + '</div>');
+                $("#"+dados.idTermometro+" .thermometer__f").append(' <div class="thermometer__label">' + Math.round(CToF(limite)) + '</div>');
+                $("#"+dados.idTermometro+" .thermometer__c").append(' <div class="thermometer__label">' + Math.round(limite) + '</div>');
             }else{
-                $(".thermometer__f").append(' <div class="thermometer__label">' + limite + '</div>');
-                $(".thermometer__c").append(' <div class="thermometer__label">' + Math.round(FToC(limite)) + '</div>');
+                $("#"+dados.idTermometro+" .thermometer__f").append(' <div class="thermometer__label">' + Math.round(limite) + '</div>');
+                $("#"+dados.idTermometro+" .thermometer__c").append(' <div class="thermometer__label">' + Math.round(FToC(limite)) + '</div>');
             }
             limite -= valor;
 
@@ -106,7 +121,8 @@ function createGaugeTemperatura(dados) {
     //ATUALIZAR TEMPERATURA
     function updateTemperature(interval = 1e3, useCelcius = false) {
         // `useCelcius` means that the temperature should increment or decrement by °C instead of °F
-        let tempVal = document.getElementById("temp-val");
+        // let tempVal = document.getElementById("temp-val");
+        let tempVal = $("#"+dados.idTermometro+" .temp-val");
         if (tempVal) {
             // let dataC = tempVal.getAttribute("data-c"),
             // ATUALIZA A TEMPERATURA
@@ -116,10 +132,12 @@ function createGaugeTemperatura(dados) {
             // let dataC = CToF(dados.temperaturaAtual),
             //     dataF = FToC(dados.temperaturaAtual),
             //         tempC = dados.temperaturaAtual,
-            temp = dados.temperaturaAtual,
+            temp = Math.round(dados.temperaturaAtual),
                 // tempC = +dataC,
                 // tempF = +dataF,
-                tempFill = document.getElementById("temp-fill");
+
+                tempFill = document.querySelector("#"+dados.idTermometro).querySelector(".temp-fill");
+
             // adjustAmt = Math.round(1 + Math.random());
 
             // ATUALIZA A TEMPERATURA DE FORMA ALEATORIA
@@ -159,6 +177,7 @@ function createGaugeTemperatura(dados) {
                 } else {
                     tempReading = `${FToC(temp)}°C, ${temp}°F`;
                 }
+
                 tempVal.title = tempReading;
             }
 
@@ -169,14 +188,13 @@ function createGaugeTemperatura(dados) {
         Esse aqui foi algo a mais que adicionei, porém pode ser retirado, deixando apenas o °F e o°C nos elementos com classe celsius e  fahrenheit
      */
     if (dados.useCelcius) {
-        $(".celsius").append('<span>' + dados.temperaturaAtual + '°C</span>');
-        $(".fahrenheit").append('<span>' + Math.round(CToF(dados.temperaturaAtual)) + '°F</span>');
+        $("#"+dados.idTermometro+" .celsius").append('<span>' + Math.round(dados.temperaturaAtual) + '°C</span>');
+        $("#"+dados.idTermometro+" .fahrenheit").append('<span>' + Math.round(CToF(dados.temperaturaAtual)) + '°F</span>');
     } else {
-        $(".celsius").append('<span>' + Math.round(FToC(dados.temperaturaAtual)) + '°C</span>');
-        $(".fahrenheit").append('<span>' + dados.temperaturaAtual + '°F</span>');
+        $("#"+dados.idTermometro+" .celsius").append('<span>' + Math.round(FToC(dados.temperaturaAtual)) + '°C</span>');
+        $("#"+dados.idTermometro+" .fahrenheit").append('<span>' + Math.round(dados.temperaturaAtual) + '°F</span>');
     }
 }
-
 //FUNÇÃO PARA CRIAR O GAUGE HORIZONTAL
 function createGaugeRadial(idCanvas, idTextField, dados) {
 
